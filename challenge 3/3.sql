@@ -1,0 +1,2 @@
+insert into users (first_name, last_name,gender, email_id,phone_number, password) values ('Umar', 'Ahmad','Male', 'umar@example.com','9894999631' ,'12345678');
+insert into users (first_name, last_name,gender, email_id,phone_number, password) values ('Lakshmi', 'AG','Female', 'lakshmi@example.com','900367263' ,'12345678');
