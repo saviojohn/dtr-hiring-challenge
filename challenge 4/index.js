@@ -3,20 +3,15 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const props = require("./add.js");
 const app = express();
-const port = 3000;
+const cors = require("cors");
+const port = 3001;
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
-
-app.get("/", (req, res) => {
-  res.json({
-    info: "Hello",
-  });
-});
-
+app.use(cors());
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
@@ -47,7 +42,7 @@ const createusers = async (req, res) => {
   );
   req.body.user_id = userid;
 
-  let response = props(200, null, "User Created");
+  let response = props(201, null, "User Created");
 
   response.data = req.body;
 
@@ -101,6 +96,35 @@ const getUserById = async (req, res) => {
 };
 
 app.get("/users/:user_id", getUserById);
+
+// login
+
+const Login = async (req, res) => {
+  const { email_id, password } = req.body;
+  let getemail = await query(
+    `select * 
+    from users
+    where email_id = $1 and password = $2`,
+    [email_id, password]
+  );
+  let check = getemail.rows[0];
+  if (check !== undefined && check !== null) {
+    let log = getemail.rows[0];
+    req.body = log;
+    let response = props(201, null, "Logged in");
+
+    response.data = req.body;
+
+    res
+      .status(201)
+      .setHeader("Content-Type", "application/json")
+      .json(response);
+  } else {
+    res.status(401).send("Invalid Login");
+  }
+};
+
+app.post("/", Login);
 
 //Update User
 
@@ -189,7 +213,7 @@ const getBusinessById = async (req, res) => {
 
 app.get("/business/:business_id", getBusinessById);
 
-//Get Users business
+//Get business
 
 const getUsersbusiness = async (req, res) => {
   let business = await query(`select * from business`);
