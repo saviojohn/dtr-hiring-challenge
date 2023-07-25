@@ -17,6 +17,9 @@ function Login() {
         password,
       });
       if (response.status === 201) {
+        localStorage.setItem("userEmail", email_id);
+        localStorage.setItem("userPassword", password);
+        localStorage.setItem("token", response.data.token);
         navigate("/home", { state: { id: email_id } });
       } else if (response.status === 401) {
         alert("Don't have an account");
