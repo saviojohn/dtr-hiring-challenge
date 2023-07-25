@@ -171,7 +171,7 @@ const createbusiness = async (req, res) => {
   let businessid = add_business.rows[0].business_id;
 
   req.body.business_id = businessid;
-  let response = props(200, null, "Business Added");
+  let response = props(201, null, "Business Added");
   response.data = req.body;
   res.status(201).setHeader("Content-Type", "application/json").send(response);
 };
@@ -236,7 +236,7 @@ const createsales = async (req, res) => {
 
   req.body.sales_id = salesid;
 
-  let response = props(200, null, "Sales Added");
+  let response = props(201, null, "Sales Added");
   response.data = req.body;
 
   res.status(201).setHeader("Content-Type", "application/json").send(response);
@@ -263,7 +263,10 @@ app.get("/sales/:sales_id", getsalesById);
 // Get Sales
 
 const getsales = async (req, res) => {
-  let sales = await query(`select * from sales`);
+  let sales = await query(`select * 
+  from sales
+  inner join business
+  on sales.business_id = business.business_id `);
 
   let response = props(200, null, "Sales Fetched");
   response.data = sales.rows;
